@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: netflyer/helloworld
-  tag: 0.1
+  tag: 8
   pullPolicy: IfNotPresent
 
 service:
