@@ -29,7 +29,7 @@ env_secret: {}
 
 service:
   enabled: true
-  name: hello-world
+  name: helloworld
   type: ClusterIP
   port: 8080
 
@@ -66,7 +66,7 @@ ingress:
   host: helloworld.example.com
   rules:
   - path: /
-    service: hello-world
+    service: helloworld
     port: 8080
   tls: []
   #  - secretName: chart-example-tls
