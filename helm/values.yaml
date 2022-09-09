@@ -43,7 +43,7 @@ image:
 replicas: 1
 strategy: RollingUpdate
 
-containerPort:
+containerPorts:
   - name: main
     containerPort: 3000
     protocol: TCP
