@@ -1,0 +1,74 @@
+type: Deployment
+## Provide a name in place of minio for `app:` labels
+## app.kubernetes.io/name: nameOverride
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
+## set kubernetes cluster domain where minio is running
+##
+clusterDomain: cluster.local
+
+# Set application name
+#
+appName: helloworld
+environment: {}
+#  SERVER_PORT: "9000"
+#  SERVER_URL: devops-psql.devops.svc.cluster.local
+
+env_secret: {}
+#  Example
+#- env_name: SPRING_DATASOURCE_USERNAME
+#  secret_name: autocode.devops-psql.credentials.postgresql.acid.zalan.do
+#  secret_key: username
+#- env_name: SPRING_DATASOURCE_PASSWORD
+#  secret_name: autocode.devops-psql.credentials.postgresql.acid.zalan.do
+#  secret_key: password
+
+service:
+  enabled: true
+  name: hello-world
+  type: ClusterIP
+  port: 8080
+
+## Set default image, imageTag, and imagePullPolicy. mode is used to indicate the
+##
+image: 
+  name: netflyer/helloworld
+  tag: 8
+  pullPolicy: IfNotPresent
+# imagePullSecrets: registryCreds
+replicas: 1
+strategy: RollingUpdate
+
+containerPort:
+  name: port
+  port: 3000
+  protocol: TCP
+
+## Set limits for container
+##
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 200m
+    memory: 512Mi
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/tls-acme: "true"
+  class: nginx
+  host: helloworld.example.com
+  rules:
+  - path: /
+    service: hello-world
+    port: 8080
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

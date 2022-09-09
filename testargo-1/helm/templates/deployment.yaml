@@ -1,0 +1,73 @@
+{{- if eq .Values.type "Deployment" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  labels:
+    app: {{ .Values.appName }}
+    {{- include "helm-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    type: {{ .Values.strategy }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.image.imagePullSecrets }}
+{{- end }}
+      containers:
+      - name: {{ .Values.appName }}
+        image: {{ .Values.image.name }}:{{ default $.Chart.AppVersion .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.PullPolicy }}
+        env:
+{{- if .Values.env_secret }}
+        {{- range .Values.env_secret }}
+        - name: {{ .env_name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .secret_name }}
+              key: {{ .secret_key }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.environment }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.appName }}-env
+        {{- end }}
+        ports: {{ toYaml .Values.containerPorts | nindent 10 }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ (first .Values.containerPorts).containerPort }}
+          initialDelaySeconds: 300
+          periodSeconds: 20
+        readinessProbe:
+          tcpSocket:
+            port: {{ (first .Values.containerPorts).containerPort }}
+          initialDelaySeconds: 150
+          periodSeconds: 10
+        resources:
+          {{- toYaml $.Values.resources | nindent 10 }}
+{{- if .Values.volumes }}
+        volumeMounts:
+        {{- range .Values.volumes }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
+{{- end }}
+{{- if .Values.volumes }}
+      volumes:
+        {{- range .Values.volumes }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ $.Values.appName }}-{{ .name }}
+        {{- end }}      
+{{- end }}
+{{- end }}

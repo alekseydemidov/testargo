@@ -1,0 +1,24 @@
+{{- if .Values.services -}}
+{{- range .Values.services }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  labels:
+    app.kubernetes.io/instance: {{ $.Values.appName }}
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: {{ .name }}
+    app.kubernetes.io/version: {{ $.Chart.Version }}
+    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+spec:
+  type: {{ .type }}
+  ports:
+    - port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      protocol: {{ .protocol }}
+      name: {{ .name }}
+  selector:
+    app: {{ $.Values.appName }}
+{{- end }}
+{{- end }}
