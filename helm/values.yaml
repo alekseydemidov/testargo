@@ -1,4 +1,3 @@
-namespace: helloworld
 type: Deployment
 ## Provide a name in place of minio for `app:` labels
 ## app.kubernetes.io/name: nameOverride
