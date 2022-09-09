@@ -14,6 +14,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{DOCKER_HUB_USERNAME}}
+        DOCKER_PASSWORD: ${{DOCKER_HUB_PASSWORD}}
+      run: |
+        docker login -u DOCKER_USER -p DOCKER_PASSWORD
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ github.run_number }}
     - name: Push image to 
