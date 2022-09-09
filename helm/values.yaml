@@ -44,9 +44,10 @@ replicas: 1
 strategy: RollingUpdate
 
 containerPort:
-  name: port
-  port: 3000
-  protocol: TCP
+  - name: main
+    containerPort: 3000
+    protocol: TCP
+
 
 ## Set limits for container
 ##
