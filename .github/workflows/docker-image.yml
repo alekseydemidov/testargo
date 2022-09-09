@@ -21,6 +21,6 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ github.run_number }}
+      run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ github.run_number }} && docker tag netflyer/helloworld:${{ github.run_number }} netflyer/helloworld:latest
     - name: Push image to 
-      run: docker push netflyer/helloworld:${{ github.run_number }}
+      run: docker push netflyer/helloworld:${{ github.run_number }} netflyer/helloworld:latest
