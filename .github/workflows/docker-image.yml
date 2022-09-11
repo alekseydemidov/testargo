@@ -41,7 +41,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: alekseydemidov/testargo-cd
-        ref: ${{env.GITHUB_HEAD_REF}}
+        ref: ${{ github.ref }}
         token: ${{ secrets.TESTARGO_CD_TOKEN }}
     - name: Change tag for application
       run: |
