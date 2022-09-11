@@ -42,7 +42,7 @@ jobs:
       with:
         repository: alekseydemidov/testargo-cd
         ref: ${{env.GITHUB_HEAD_REF}}
-        token: ${{ secrets.TESTARGO_CD_TOKEN }}
+#       token: ${{ secrets.TESTARGO_CD_TOKEN }}
     - name: Change tag for application
       run: |
         git config --global user.email "testargo@example.com"
