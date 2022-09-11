@@ -1,8 +1,5 @@
 name: Deploy to Prod
 on:
-    workflow_run:
-      branches:
-        - 'main'
     workflow_dispatch:
       inputs:
         version:
@@ -11,8 +8,8 @@ on:
           type: string
 
 jobs:
-
   build:
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
 
     steps:
