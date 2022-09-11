@@ -45,9 +45,10 @@ jobs:
         token: ${{ secrets.TESTARGO_CD_TOKEN }}
     - name: Change tag for application
       run: |
-        cd testargo-cd
-        sed -i -e "s/tag: /tag: ${{ steps.vars.outputs.sha_short }}/"  ./helm/values.yaml
-        git add ./helm/values.yaml
-        git commit -m "New app version ${{ steps.vars.outputs.sha_short }}" 
-        git push
+        ls -lR
+        #cd testargo-cd
+        #sed -i -e "s/tag: /tag: ${{ steps.vars.outputs.sha_short }}/"  ./helm/values.yaml
+        #git add ./helm/values.yaml
+        #git commit -m "New app version ${{ steps.vars.outputs.sha_short }}" 
+        #git push
         
