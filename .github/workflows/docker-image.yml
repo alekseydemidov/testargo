@@ -5,8 +5,13 @@ on:
     branches:
     - '*'
     - '!main'
-#  pull_request:
-#    branches: [ "main" ]
+    - 'dev'
+  pull_request:
+#   types:
+#     - opened
+    branches:
+      - 'dev'
+      - 'main'
 
 jobs:
 
@@ -16,6 +21,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Set outputs
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+    - name: Check outputs
+      run: echo ${{ steps.vars.outputs.sha_short }}
     - name: Docker login
       env:
         DOCKER_USER: ${{secrets.DOCKER_HUB_USERNAME}}
@@ -23,6 +33,23 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ github.run_number }} && docker tag netflyer/helloworld:${{ github.run_number }} netflyer/helloworld:latest
+      run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ steps.vars.outputs.sha_short }} --tag  netflyer/helloworld:latest
     - name: Push image to 
-      run: docker push netflyer/helloworld:${{ github.run_number }} && docker push netflyer/helloworld:latest
+      run: docker push netflyer/helloworld:${{ steps.vars.outputs.sha_short }} && docker push netflyer/helloworld:latest
+    
+    - name: Check out CD repo
+      uses: actions/checkout@v3
+      with:
+        repository: alekseydemidov/testargo-cd
+        ref: ${{ github.ref }}
+        token: ${{ secrets.TESTARGO_CD_TOKEN }}
+    - name: Change tag for application
+      run: |
+        git config --global user.email "testargo@example.com"
+        git config --global user.name "Test Argo"
+        sed -i -e "s/tag: .*/tag: ${{ steps.vars.outputs.sha_short }}/"  ./helm/values.yaml
+        cat ./helm/values.yaml
+        git add ./helm/values.yaml
+        git commit -m "New app version ${{ steps.vars.outputs.sha_short }}" 
+        git push
+        
