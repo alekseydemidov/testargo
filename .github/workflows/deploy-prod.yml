@@ -21,9 +21,9 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ input.version }} --tag  netflyer/helloworld:latest
+      run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ inputs.version }} --tag  netflyer/helloworld:latest
     - name: Push image to 
-      run: docker push netflyer/helloworld:${{ input.version }} && docker push netflyer/helloworld:latest
+      run: docker push netflyer/helloworld:${{ inputs.version }} && docker push netflyer/helloworld:latest
 
     - name: Check out CD repo
       uses: actions/checkout@v3
@@ -36,9 +36,9 @@ jobs:
       run: |
         git config --global user.email "testargo@example.com"
         git config --global user.name "Test Argo"
-        sed -i -e "s/tag: .*/tag: ${{ input.version }}/"  ./helm/values.yaml
+        sed -i -e "s/tag: .*/tag: ${{ inputs.version }}/"  ./helm/values.yaml
         cat ./helm/values.yaml
         git add ./helm/values.yaml
-        git commit -m "New app version ${{ input.version }}" 
+        git commit -m "New app version ${{ inputs.version }}" 
         git push
         
