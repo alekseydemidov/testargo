@@ -16,7 +16,6 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -36,13 +35,22 @@ jobs:
       run: docker build . --file Dockerfile --tag netflyer/helloworld:${{ steps.vars.outputs.sha_short }} --tag  netflyer/helloworld:latest
     - name: Push image to 
       run: docker push netflyer/helloworld:${{ steps.vars.outputs.sha_short }} && docker push netflyer/helloworld:latest
-    
+
     - name: Check out CD repo
+      if: ${{ github.base_ref == ''}}
       uses: actions/checkout@v3
       with:
         repository: alekseydemidov/testargo-cd
         ref: ${{ github.ref }}
         token: ${{ secrets.TESTARGO_CD_TOKEN }}
+    - name: Check out CD repo
+      if: ${{ github.base_ref != ''}}
+      uses: actions/checkout@v3
+      with:
+        repository: alekseydemidov/testargo-cd
+        ref: ${{ github.base_ref }}
+        token: ${{ secrets.TESTARGO_CD_TOKEN }}
+
     - name: Change tag for application
       run: |
         git config --global user.email "testargo@example.com"
