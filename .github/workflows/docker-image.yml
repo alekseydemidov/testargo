@@ -38,7 +38,7 @@ jobs:
       run: docker push netflyer/helloworld:${{ steps.vars.outputs.sha_short }} && docker push netflyer/helloworld:latest
     
     - name: Check out CD repo
-      uses: actions/checkout@${{ env.GITHUB_HEAD_REF }}
+      uses: actions/checkout@${GITHUB_HEAD_REF}
       with:
         repository: alekseydemidov/testargo-cd
         token: ${{ secrets.TESTARGO_CD_TOKEN }}
